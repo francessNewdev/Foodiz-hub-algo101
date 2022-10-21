@@ -1,0 +1,143 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz main_l4
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l3
+err
+main_l3:
+txn Sender
+global CreatorAddress
+==
+return
+main_l4:
+global GroupSize
+int 2
+==
+txn GroupIndex
+int 0
+==
+&&
+txn Note
+byte "foodiz-order:uv1"
+==
+&&
+txn NumAppArgs
+int 10
+<=
+&&
+txn NumApplications
+int 10
+<=
+&&
+txn NumApplications
+txn NumAppArgs
+==
+&&
+assert
+int 0
+store 4
+int 0
+store 0
+main_l5:
+load 0
+txn NumApplications
+<
+bnz main_l7
+gtxn 1 TypeEnum
+int pay
+==
+assert
+gtxn 1 Receiver
+addr GROKXQMELYOO5WDE6U5OP2TRKF3ZCSIBCV47KBEJWMMNPUDXLQGS7SXQSM
+==
+assert
+gtxn 1 Amount
+load 4
+==
+assert
+gtxn 1 Sender
+gtxn 0 Sender
+==
+assert
+byte "TOTAL"
+load 4
+app_global_put
+byte "TIME"
+global LatestTimestamp
+app_global_put
+int 1
+return
+main_l7:
+load 0
+int 1
++
+txnas Applications
+store 1
+load 0
+txnas ApplicationArgs
+btoi
+store 3
+load 1
+callsub getprice_0
+store 2
+load 4
+load 2
+load 3
+*
++
+store 4
+load 1
+callsub getname_1
+store 5
+load 5
+load 3
+app_global_put
+load 0
+int 1
++
+store 0
+b main_l5
+
+// get_price
+getprice_0:
+store 6
+load 6
+byte "PRICE"
+app_global_get_ex
+store 8
+store 7
+load 8
+bnz getprice_0_l2
+int 0
+store 9
+b getprice_0_l3
+getprice_0_l2:
+load 7
+store 9
+getprice_0_l3:
+load 9
+retsub
+
+// get_name
+getname_1:
+store 10
+load 10
+byte "NAME"
+app_global_get_ex
+store 12
+store 11
+load 12
+bnz getname_1_l2
+byte ""
+store 13
+b getname_1_l3
+getname_1_l2:
+load 11
+store 13
+getname_1_l3:
+load 13
+retsub

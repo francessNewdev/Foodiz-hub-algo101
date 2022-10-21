@@ -1,0 +1,41 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz main_l4
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l3
+err
+main_l3:
+txn Sender
+global CreatorAddress
+==
+return
+main_l4:
+txn NumAppArgs
+int 3
+==
+assert
+txn Note
+byte "foodiz:uv1"
+==
+assert
+txna ApplicationArgs 2
+btoi
+int 0
+>
+assert
+byte "NAME"
+txna ApplicationArgs 0
+app_global_put
+byte "IMAGE"
+txna ApplicationArgs 1
+app_global_put
+byte "PRICE"
+txna ApplicationArgs 2
+btoi
+app_global_put
+int 1
+return
