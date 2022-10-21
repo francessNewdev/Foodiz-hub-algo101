@@ -84,7 +84,7 @@ class Order:
                 meal_name.store(get_name(meal_id.load())),
 
                 # store in global storage
-                App.globalPut(meal_name.load(), count.load())
+                App.globalPut(meal_name.load(), App.globalGet(meal_name.load()) + count.load())
             ),
 
             # Check for payment transaction params, if it fails, group txn fails
