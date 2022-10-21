@@ -10,6 +10,7 @@ class Meal:
     # creates a meal onto the platform
     def application_creation(self):
         return Seq([
+            Assert(Txn.sender() == self.Variables.payment_address),
             Assert(Txn.application_args.length() == Int(3)),
             Assert(Txn.note() == Bytes("foodiz:uv1")),
             Assert(
