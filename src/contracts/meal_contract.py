@@ -7,11 +7,19 @@ class Meal:
         image = Bytes("IMAGE")
         price = Bytes("PRICE")
 
+    # creates a meal onto the platform
     def application_creation(self):
         return Seq([
+            Assert(Txn.sender() == self.Variables.payment_address),
             Assert(Txn.application_args.length() == Int(3)),
             Assert(Txn.note() == Bytes("foodiz:uv1")),
-            Assert(Btoi(Txn.application_args[2]) > Int(0)),
+            Assert(
+                And(
+                    Len(Txn.application_args[0]) > Int(0),
+                    Len(Txn.application_args[1]) > Int(0),
+                    Btoi(Txn.application_args[2]) > Int(0)
+                )
+            ),
             App.globalPut(self.Variables.name, Txn.application_args[0]),
             App.globalPut(self.Variables.image, Txn.application_args[1]),
             App.globalPut(self.Variables.price, Btoi(Txn.application_args[2])),
