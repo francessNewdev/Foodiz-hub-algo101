@@ -35,7 +35,7 @@ const compileProgram = async (programSource) => {
 
 // CREATE MEAL: ApplicationCreateTxn
 export const createMealAction = async (senderAddress, meal) => {
-  console.log("Adding meal...");
+  
 
   let params = await algodClient.getTransactionParams().do();
 
@@ -71,32 +71,26 @@ export const createMealAction = async (senderAddress, meal) => {
 
   // Sign & submit the transaction
   let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
-  console.log("Signed transaction with txID: %s", txId);
+  
   await algodClient.sendRawTransaction(signedTxn.blob).do();
 
   // Wait for transaction to be confirmed
   let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
-  // Get the completed Transaction
-  console.log(
-    "Transaction " +
-      txId +
-      " confirmed in round " +
-      confirmedTxn["confirmed-round"]
-  );
+  
 
   // Get created application id and notify about completion
   let transactionResponse = await algodClient
     .pendingTransactionInformation(txId)
     .do();
   let appId = transactionResponse["application-index"];
-  console.log("Created new app-id: ", appId);
+  
   return appId;
 };
 
 // DELETE meal: ApplicationDeleteTxn
 export const deleteMealAction = async (senderAddress, index) => {
-  console.log("Deleting application...");
+  
 
   let params = await algodClient.getTransactionParams().do();
 
@@ -112,31 +106,26 @@ export const deleteMealAction = async (senderAddress, index) => {
 
   // Sign & submit the transaction
   let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
-  console.log("Signed transaction with txID: %s", txId);
+  
   await algodClient.sendRawTransaction(signedTxn.blob).do();
 
   // Wait for transaction to be confirmed
   const confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
   // Get the completed Transaction
-  console.log(
-    "Transaction " +
-      txId +
-      " confirmed in round " +
-      confirmedTxn["confirmed-round"]
-  );
+  
 
   // Get application id of deleted application and notify about completion
   let transactionResponse = await algodClient
     .pendingTransactionInformation(txId)
     .do();
   let appId = transactionResponse["txn"]["txn"].apid;
-  console.log("Deleted app-id: ", appId);
+  
 };
 
 // GET mealS: Use indexer
 export const getMealsAction = async () => {
-  console.log("Fetching meals...");
+  
   let note = new TextEncoder().encode(mealNote);
   let encodedNote = Buffer.from(note).toString("base64");
 
@@ -147,6 +136,7 @@ export const getMealsAction = async () => {
     .txType("appl")
     .minRound(minRound)
     .do();
+    
 
   let meals = [];
   for (const transaction of transactionInfo.transactions) {
@@ -159,7 +149,7 @@ export const getMealsAction = async () => {
       }
     }
   }
-  console.log("meals fetched.");
+  
   return meals;
 };
 
